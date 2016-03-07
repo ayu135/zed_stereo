@@ -2,11 +2,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <opencv2/opencv.hpp>
 #define WIN_SIZE 9
 #define MAX_SHIFT 63
 
-int main(){
-	// set board width to half SAD window
+using namespace cv;
+
+Mat getDisparity(Mat h_inLeft, Mat h_inRight){
+  // set board width to half SAD window
+  int i,j;
+  int imageHeight = h_inLeft.rows;
+  int imageWidth =h_inLeft.cols;
   int marginWidth = WIN_SIZE / 2;
   int marginHeight = WIN_SIZE / 2;
   // set height of padded image
@@ -17,9 +23,9 @@ int main(){
   int mem_size_paddedRight = sizeof(unsigned char) * paddedHeight * paddedWidth;
   int mem_size_paddedLeft = mem_size_paddedRight;
   // malloc for padded left image
-  unsigned char* paddedLeft = (unsigned char*) malloc(mem_size_paddedLeft);
+  Mat* paddedLeft = (unsigned char*) malloc(mem_size_paddedLeft);
   // malloc for padded right image
-  unsigned char* paddedRight = (unsigned char*) malloc(mem_size_paddedRight);
+  Mat* paddedRight = (unsigned char*) malloc(mem_size_paddedRight);
 
   // initial the padded image and shifted image to '0'
   memset(paddedLeft, 0, mem_size_paddedLeft);
@@ -36,7 +42,7 @@ int main(){
   }
 
   // malloc for shifted right image
-  unsigned char* shiftedRight = (unsigned char*) malloc(mem_size_paddedRight);
+  Mat shiftedRight;
   // malloc for SSD image, use integer (4 Byte) to avoid over flow
   int mem_size_ssd = sizeof(unsigned int) * paddedHeight * paddedWidth;
   unsigned int* ssd = (unsigned int*) malloc(mem_size_ssd);
@@ -48,7 +54,7 @@ int main(){
   unsigned int* minssd = (unsigned int*) malloc(mem_size_minssd);
   // disparity map
   int mem_size_disparity = sizeof(unsigned char) * imageHeight * imageWidth;
-  unsigned char* disparity = (unsigned char*) malloc(mem_size_disparity);
+  Mat disparity;
   // the shift value of the right image
   int shift;
 
@@ -121,4 +127,16 @@ int main(){
     }
       
   }
+  return disparity;
+}
+
+int main(){
+	Mat disparity,h_inLeft,h_inRight;
+    h_inLeft = imread( "/cones/im2.png", 0 );
+    h_inRight = imread("/cones/im6.png",0);
+    disparity = getDisparity(h_inLeft,h_inRight);
+    namedWindow("Disparity",WINDOW_AUTOSIZE);
+    imshow("Disparity",disparity);
+
+
 }
