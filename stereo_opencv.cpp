@@ -8,8 +8,8 @@ int main(){
 	Mat img1, img2, g1, g2;
 	Mat disp, disp8;
 
-	img1 = imread("im2.png",0);
-	img2 = imread("im6.png",0);
+	img1 = imread("im7.png",0);
+	img2 = imread("im8.png",0);
 	
 
 	StereoBM sbm;
@@ -28,7 +28,7 @@ int main(){
 	normalize(disp, disp8, 0, 255, CV_MINMAX, CV_8U);
 	equalizeHist( disp8, disp );
 	// namedWindow( "Display window", WINDOW_AUTOSIZE );
-	imwrite("disp2.png", disp);
+	imwrite("disp3.png", disp);
 	printf("Success");
 
 	return 0;
